@@ -31,10 +31,41 @@ pipeline {
             }
         }
 
+ stage ('Build Docker Image') {
+          steps {
+            // script{
+            //  dockerHome= tool 'docker-inst'
+            // }
+            //  sh "${dockerHome}/bin/docker build . -t clixx-image:$VERSION "
+            sh "docker build . -t clixx-image:$VERSION "
+          }
+        }
+
+  stage ('Starting Docker Image') {
+          steps {
+              sh '''
+              if ( docker ps|grep clixx-cont ) then
+                 echo "Docker image exists, killing it"
+                 docker stop clixx-cont
+                 docker rm clixx-cont
+                 docker run --name clixx-cont  -p 80:80 -d clixx-image:$VERSION
+              else
+                 docker run --name clixx-cont  -p 80:80 -d clixx-image:$VERSION 
+              fi
+              '''
+          }
+        }
+       
+
     }
 }
 
 def getSonarPath(){
         def SonarHome= tool name: 'sonarqube', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
         return SonarHome
+    }
+
+def getDockerPath(){
+        def DockerHome= tool name: 'docker-inst', type: 'dockerTool'
+        return DockerHome
     }
