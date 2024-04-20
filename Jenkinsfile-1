@@ -68,7 +68,8 @@ pipeline {
             source python3-virtualenv/bin/activate
             python3 --version
             pip3 install boto3 botocore boto
-            ansible-playbook -i localhost $WORKSPACE/deploy_db_ansible/deploy_db.yml 
+            // ansible-playbook -i localhost $WORKSPACE/deploy_db_ansible/deploy_db.yml 
+            ansible-playbook --extra-vars "ansible_python_interpreter=$(command -v python3)" $WORKSPACE/deploy_db_ansible/deploy_db.yml
             deactivate
 
               '''
