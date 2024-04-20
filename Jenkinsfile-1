@@ -39,7 +39,7 @@ pipeline {
             //  sh "${dockerHome}/bin/docker build . -t clixx-image:$VERSION "
             // sh "docker build . -t clixx-image:$VERSION " ############# Restore
             sh '''
-            sudo systemctl start docker
+            // sudo systemctl start docker
             sudo chmod 666 /var/run/docker.sock
             docker build . -t clixx-image:$VERSION
             '''
