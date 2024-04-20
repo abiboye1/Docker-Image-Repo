@@ -15,7 +15,7 @@ pipeline {
         withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]){
         withSonarQubeEnv('SonarQubeScanner') {
           sh " ${scannerHome}/bin/sonar-scanner \
-          -Dsonar.projectKey=CliXX-App   \
+          -Dsonar.projectKey=CliXX-App-Abib   \
           -Dsonar.login=${SONAR_TOKEN} "
         }
         }
@@ -53,6 +53,20 @@ pipeline {
              sh " docker stop clixx-cont-$VERSION "
              sh " docker rm  clixx-cont-$VERSION "
            }
+        }
+
+  stage ('Log Into ECR and push the newly created Docker') {
+          steps {
+             script {
+                def userInput = input(id: 'confirm', message: 'Push Image To ECR?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Push to ECR?', name: 'confirm'] ])
+             }
+              sh '''
+                aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 767397944080.dkr.ecr.us-east-1.amazonaws.com/clixx-repository
+                docker tag clixx-image:$VERSION 767397944080.dkr.ecr.us-east-1.amazonaws.com/clixx-repository:clixx-image-$VERSION
+                docker tag clixx-image:latest 767397944080.dkr.ecr.us-east-1.amazonaws.com/clixx-repository:clixx-image-$VERSION
+                docker push 767397944080.dkr.ecr.us-east-1.amazonaws.com/clixx-repository:clixx-image-$VERSION
+              '''
+          }
         }
 
     }
