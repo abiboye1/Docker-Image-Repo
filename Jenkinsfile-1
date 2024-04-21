@@ -77,20 +77,21 @@ pipeline {
             script {
                 def userInput = input(id: 'confirm', message: 'Is DB creation complete?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Complete?', name: 'confirm'] ])
              }
+              withCredentials([string(credentialsId: 'DB_USER_NAME', variable: 'DB_USER_NAME'),string(credentialsId: 'DB_PASSWORD', variable: 'DB_PASSWORD'),string(credentialsId: 'DB_NAME', variable: 'DB_NAME'),string(credentialsId: 'SERVER_INSTANCE', variable: 'SERVER_INSTANCE')]){
               sh '''
-               USERNAME='wordpressuser'
-               PASSWORD='W3lcome123'
-               DBNAME='wordpressdb'
+               USERNAME=${DB_USER_NAME}
+               PASSWORD=${DB_PASSWORD}
+               DBNAME=${DB_NAME}
                SERVER_IP=`curl http://169.254.169.254/latest/meta-data/public-ipv4`
-               #SERVER_INSTANCE='wordpressdbclixxjenkins.cd7numzl1xfe.us-east-1.rds.amazonaws.com'
-               SERVER_INSTANCE='wordpressdbclixxjenkins.czu6e4mw2ezx.us-east-1.rds.amazonaws.com'
+               SERVER_INSTANCE=${SERVER_INSTANCE}
                echo "use wordpressdb;" >> ./db.setup
-               echo "UPDATE wp_options SET option_value = '$SERVER_IP' WHERE option_value LIKE 'http%'; " >> ./db.setup
-               mysql -u $USERNAME --password=$PASSWORD -h $SERVER_INSTANCE  -D  $DBNAME < ./db.setup
+               echo "UPDATE wp_options SET option_value = '$SERVER_IP' WHERE option_value LIKE 'http%'; " >> $WORKSPACE/db.setup
+               mysql -u $USERNAME --password=$PASSWORD -h $SERVER_INSTANCE  -D  $DBNAME < $WORKSPACE/db.setup
 
               '''
           }
         }
+  }
      
   stage ('Tear Down CliXX Docker Image and Database') {
           steps {
