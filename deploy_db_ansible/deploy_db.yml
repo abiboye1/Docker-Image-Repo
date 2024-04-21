@@ -1,18 +1,49 @@
+# ---
+#   - name: "CliXX DB Deployment Ansible Playbook"
+#     # hosts: localhost
+#     host: ALL
+#     # connection: local
+#     become: ec2-user
+#     vars:
+#       instance_id: wordpressdbclixxjenkins
+#       db_snapshot: wordpressdbclixxsnap
+#       security_group: sg-0e7706dd56535419b
+#     tasks:
+#        - name: Restore DB from snapshot
+#          local_action:
+#            module: rds
+#            command: restore
+#            snapshot: '{{db_snapshot }}'
+#            instance_name: '{{ instance_id }}'
+#            region: us-east-1
+#            wait: yes
+#            instance_type: db.t2.small
+#            wait_timeout: 1200
+#        - name: Modify to add SG
+#          local_action:
+#            module: rds
+#            command: modify
+#            instance_name: '{{ instance_id }}'
+#            region: us-east-1
+#            vpc_security_groups: '{{ security_group }}'
+
+
 ---
   - name: "CliXX DB Deployment Ansible Playbook"
     hosts: localhost
-    # hosts: ALL
     connection: local
     become: False
     vars:
-      instance_id: wordpressdbclixxjenkins
+      instance_id: wordpressdbclixx-ecs
       db_snapshot: wordpressdbclixxsnap
-      security_group: sg-0e7706dd56535419b
+      security_group: sg-0fc7e93a93422ffdf
     tasks:
        - name: Restore DB from snapshot
          local_action:
            module: rds
            command: restore
+           secret_key: '{{ secret_key }}'
+           access_key: '{{ access_key }}'
            snapshot: '{{db_snapshot }}'
            instance_name: '{{ instance_id }}'
            region: us-east-1
@@ -23,6 +54,8 @@
          local_action:
            module: rds
            command: modify
+           secret_key: '{{ secret_key }}'
+           access_key: '{{ access_key }}'
            instance_name: '{{ instance_id }}'
            region: us-east-1
            vpc_security_groups: '{{ security_group }}'
