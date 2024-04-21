@@ -69,7 +69,8 @@ pipeline {
             python3 --version
             pip3 install boto3 botocore boto
             // ansible-playbook -i localhost $WORKSPACE/deploy_db_ansible/deploy_db.yml 
-            ansible-playbook --extra-vars "ansible_python_interpreter=$(command -v python3)" $WORKSPACE/deploy_db_ansible/deploy_db.yml
+            // ansible-playbook --extra-vars "ansible_python_interpreter=$(command -v python3)" $WORKSPACE/deploy_db_ansible/deploy_db.yml
+            /usr/bin/ansible-playbook -i localhost /var/lib/jenkins/workspace/stack-infra/docker_image_pipeline/CliXX_image_Deployment/deploy_db_ansible/deploy_db.yml
             deactivate
 
               '''
