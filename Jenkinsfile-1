@@ -82,8 +82,6 @@ pipeline {
                USERNAME=${DB_USER_NAME}
                PASSWORD=${DB_PASSWORD}
                DBNAME=${DB_NAME}
-            //    TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` 
-            //    SERVER_IP=`curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4`
                SERVER_IP=`curl http://169.254.169.254/latest/meta-data/public-ipv4`
                SERVER_INSTANCE=${SERVER_INSTANCE}
                echo "use wordpressdb;" >> ./db.setup
