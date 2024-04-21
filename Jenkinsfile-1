@@ -117,6 +117,7 @@ pipeline {
              script {
                 def userInput = input(id: 'confirm', message: 'Push Image To ECR?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Push to ECR?', name: 'confirm'] ])
              }
+             withCredentials([string(credentialsId: 'ECR_USERNAME', variable: 'ECR_USERNAME'), string(credentialsId: 'ECR_REPO', variable: 'ECR_REPO'), ]){
               sh '''
                 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 767397944080.dkr.ecr.us-east-1.amazonaws.com/clixx-repository
                 docker tag clixx-image:$VERSION 767397944080.dkr.ecr.us-east-1.amazonaws.com/clixx-repository:clixx-image-$VERSION
