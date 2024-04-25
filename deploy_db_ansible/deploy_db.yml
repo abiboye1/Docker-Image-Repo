@@ -35,7 +35,7 @@
     become: False
     vars:
       instance_id: wordpressdbclixxjenkins
-      db_snapshot: wordpressdbclixxsnap
+      db_snapshot: wordpressdbclixxsnap222
       security_group: sg-0e7706dd56535419b
     tasks:
        - name: Restore DB from snapshot
